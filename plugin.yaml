@@ -1,0 +1,7 @@
+name: mattpocock_skills
+title: Matt Pocock Skills
+description: Vendors mattpocock/skills (Skills for Real Engineers) and installs its engineering and productivity skills into the Agent Zero skill library, re-syncing on plugin update.
+version: 1.0.0
+settings_sections: []
+per_project_config: false
+per_agent_config: false

@@ -1,0 +1,9 @@
+# Upstream is fetched at install() time, never committed.
+vendor/
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# OS noise
+.DS_Store
