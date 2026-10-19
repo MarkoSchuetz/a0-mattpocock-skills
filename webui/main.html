@@ -52,9 +52,15 @@
                     @click="$store.mattpocockSkillsStore.resyncUpstream()"
                     :disabled="$store.mattpocockSkillsStore.busy">
               <x-icon name="sync" aria-hidden="true"></x-icon>
-              <span x-text="$store.mattpocockSkillsStore.busy ? 'Re-syncing…' : 'Re-sync upstream now'"></span>
+              <span x-text="$store.mattpocockSkillsStore.busy ? 'Re-syncing… (this can take up to a minute)' : 'Re-sync upstream now'"></span>
             </button>
           </div>
+
+          <p class="mps-note">
+            Each run makes a few round trips to GitHub (a shallow clone of a few
+            megabytes), so it can take up to a minute. Keep this screen open
+            until the confirmation appears.
+          </p>
 
           <template x-if="$store.mattpocockSkillsStore.lastRun">
             <dl class="mps-meta">
