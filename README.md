@@ -38,7 +38,19 @@ re-runs `install()`, which re-fetches upstream and re-syncs everything. If
 upstream itself has not changed, you get the same skills with a fresh commit
 record. There is nothing to bump by hand.
 
-To follow a different ref (e.g. a tag) or a fork, edit `upstream.yaml`:
+### Re-syncing without a plugin update
+
+Agent Zero only offers the **Update** button when *this* repository has new
+commits. If upstream changes but this repository does not, no update appears —
+even though the skills are stale. For that case, open the plugin's screen
+(**Open** in the plugin list, or the plugin's main page) and press
+**Re-sync upstream now**.
+
+That button calls `POST /api/plugins/mattpocock_skills/sync_upstream`, which runs
+the same fetch → verify → swap → sync pipeline as `install()`, then reports the
+resolved upstream commit, version, skill count and command count.
+
+To follow a different ref (e.g. a tag) or a fork, edit `upstream.yaml`:",
 
 ```yaml
 repo: https://github.com/mattpocock/skills.git

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Matt Pocock Skills</title>
+  <script type="module" src="/plugins/mattpocock_skills/webui/mattpocock-skills-store.js"></script>
+  <style>
+    .mps-shell { max-width: 760px; margin: 0 auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+    .mps-kicker { text-transform: uppercase; letter-spacing: .08em; font-size: .75rem; opacity: .7; margin: 0 0 .25rem; }
+    .mps-shell h1 { margin: 0 0 .5rem; font-size: 1.5rem; }
+    .mps-lede { margin: 0; opacity: .85; line-height: 1.5; }
+    .mps-card { border: 1px solid rgba(127,127,127,.25); border-radius: 10px; padding: 1rem 1.125rem; display: flex; flex-direction: column; gap: .75rem; }
+    .mps-row { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+    .mps-btn { display: inline-flex; align-items: center; gap: .5rem; padding: .55rem 1rem; border-radius: 8px; border: 1px solid rgba(127,127,127,.35); background: transparent; color: inherit; cursor: pointer; font: inherit; }
+    .mps-btn:hover:not(:disabled) { background: rgba(127,127,127,.12); }
+    .mps-btn:disabled { opacity: .55; cursor: default; }
+    .mps-meta { display: grid; grid-template-columns: max-content 1fr; gap: .35rem .9rem; font-size: .9rem; }
+    .mps-meta dt { opacity: .7; }
+    .mps-meta dd { margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .mps-note { font-size: .85rem; opacity: .7; margin: 0; }
+  </style>
+</head>
+<body>
+  <div x-data>
+    <template x-if="$store.mattpocockSkillsStore">
+      <main class="mps-shell"
+            x-create="$store.mattpocockSkillsStore.onOpen()"
+            x-destroy="$store.mattpocockSkillsStore.cleanup()">
+
+        <header>
+          <p class="mps-kicker">Agent Zero plugin</p>
+          <h1>Matt Pocock Skills</h1>
+          <p class="mps-lede">
+            Engineering and productivity skills from
+            <code>github.com/mattpocock/skills</code>, synced into your skill library
+            with a slash command for each one.
+          </p>
+        </header>
+
+        <section class="mps-card" aria-labelledby="mps-sync-title">
+          <h2 id="mps-sync-title" style="margin:0;font-size:1.05rem;">Upstream sync</h2>
+          <p class="mps-note">
+            Fetches the latest upstream skills right now, without waiting for a
+            plugin update. Existing skills are only replaced after the new copy
+            has been fetched and verified.
+          </p>
+
+          <div class="mps-row">
+            <button type="button"
+                    class="mps-btn"
+                    @click="$store.mattpocockSkillsStore.resyncUpstream()"
+                    :disabled="$store.mattpocockSkillsStore.busy">
+              <x-icon name="sync" aria-hidden="true"></x-icon>
+              <span x-text="$store.mattpocockSkillsStore.busy ? 'Re-syncing…' : 'Re-sync upstream now'"></span>
+            </button>
+          </div>
+
+          <template x-if="$store.mattpocockSkillsStore.lastRun">
+            <dl class="mps-meta">
+              <dt>Upstream commit</dt>
+              <dd x-text="$store.mattpocockSkillsStore.lastRun.current_commit || '—'"></dd>
+              <dt>Upstream version</dt>
+              <dd x-text="$store.mattpocockSkillsStore.lastRun.upstream_version || '—'"></dd>
+              <dt>Skills</dt>
+              <dd x-text="$store.mattpocockSkillsStore.lastRun.skills_count"></dd>
+              <dt>Slash commands</dt>
+              <dd x-text="$store.mattpocockSkillsStore.lastRun.commands_count"></dd>
+              <dt>Synced at</dt>
+              <dd x-text="$store.mattpocockSkillsStore.lastRun.synced_at || '—'"></dd>
+            </dl>
+          </template>
+        </section>
+
+        <section class="mps-card" aria-labelledby="mps-how-title">
+          <h2 id="mps-how-title" style="margin:0;font-size:1.05rem;">When this is needed</h2>
+          <p class="mps-note">
+            The plugin already re-syncs automatically whenever it is installed or
+            updated. Use this button when upstream has changed but this plugin's
+            own repository has no new commits — the Update button is hidden in
+            that case, because Agent Zero offers updates per plugin-repository
+            commit.
+          </p>
+        </section>
+
+      </main>
+    </template>
+  </div>
+</body>
+</html>
