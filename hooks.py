@@ -11,8 +11,43 @@ import os
 from usr.plugins.mattpocock_skills.helpers import upstream
 
 
+def _notify(kind: str, message: str, display_time: int = 6) -> None:
+    """Best-effort WebUI notification; never breaks the lifecycle hook."""
+    try:
+        from helpers.notification import (
+            NotificationPriority,
+            NotificationType,
+        )
+        from agent import AgentContext
+
+        type_map = {
+            "info": NotificationType.INFO,
+            "success": NotificationType.SUCCESS,
+            "warning": NotificationType.WARNING,
+            "error": NotificationType.ERROR,
+            "progress": NotificationType.PROGRESS,
+        }
+        AgentContext.get_notification_manager().add_notification(
+            type_map.get(kind, NotificationType.INFO),
+            NotificationPriority.NORMAL,
+            message,
+            "Matt Pocock Skills",
+            "",
+            display_time,
+            "mattpocock_skills",
+        )
+    except Exception:
+        pass
+
+
 def install():
     """Fetch upstream, sync skills, then sync the matching slash commands."""
+    _notify(
+        "progress",
+        "Contacting GitHub to fetch the latest skills — this can take up to a minute.",
+        10,
+    )
+
     config = upstream.ensure_vendor()
     upstream.write_config(config)
 
@@ -29,6 +64,20 @@ def install():
         print(f"mattpocock_skills: synced {len(commands)} slash commands")
     except Exception as exc:  # command sync must not fail the skill install
         print(f"mattpocock_skills: command sync failed: {exc}")
+
+    commit = config.get("resolved_commit", "")[:12] or "unknown"
+    if config.get("fetched"):
+        _notify(
+            "success",
+            f"Synced {len(installed)} skills at upstream {commit}.",
+            8,
+        )
+    else:
+        _notify(
+            "warning",
+            "GitHub could not be reached; the previously synced skills were kept.",
+            10,
+        )
 
     return {"skills": installed, "config": config}
 
